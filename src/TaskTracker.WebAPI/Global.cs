@@ -1,0 +1,12 @@
+﻿global using System.Security.Claims;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Mvc;
+global using TaskTracker.WebAPI;
+global using TaskTracker.Application;
+global using TaskTracker.Application.DTOs;
+global using TaskTracker.Application.DTOs.User;
+global using TaskTracker.Application.DTOs.Task;
+global using TaskTracker.Application.Interfaces.Services;
+global using TaskTracker.Infrastructure;
+global using TaskTracker.WebAPI.Configurations;
+global using TaskTracker.WebAPI.ExceptionHandlers;
