@@ -1,4 +1,6 @@
-﻿namespace TaskTracker.Application.Services;
+﻿using System.Linq.Expressions;
+
+namespace TaskTracker.Application.Services;
 
 public class TaskService(IApplicationDbContext dbContext, IMapper mapper) : ITaskService
 {
@@ -15,12 +17,28 @@ public class TaskService(IApplicationDbContext dbContext, IMapper mapper) : ITas
         return mapper.Map<TaskResponse>(task);
     }
 
-    public async Task<IEnumerable<TaskResponse>> GetAllAsync(Guid userId, CancellationToken cancellationToken)
+    public async Task<IEnumerable<TaskResponse>> GetAllAsync(GetTasksRequest request, CancellationToken cancellationToken)
     {
-        var tasks = await dbContext.Tasks.AsNoTracking()
-            .Where(task => task.UserId == userId)
-            .ToListAsync(cancellationToken: cancellationToken);
+        var query = dbContext.Tasks
+            .Where(task => string.IsNullOrWhiteSpace(request.Search) || 
+                           task.Title.ToLower().Contains(request.Search.ToLower()));
 
+        Expression<Func<TaskEntity, object>> selectorKey = request.SortItem?.ToLower() switch
+        {
+            "title" => task => task.Title,
+            "date" => task => task.CreatedAt,
+            "favorite" => task => task.IsFavorite,
+            _ => task => task.Id
+        };
+
+        query = request.Order == "desc" 
+            ? query.OrderByDescending(selectorKey) 
+            : query.OrderBy(selectorKey);
+
+        var tasks = await query
+            .Where(task => task.UserId == request.UserId)
+            .ToListAsync(cancellationToken);
+            
         return mapper.Map<List<TaskResponse>>(tasks);
     }
 

@@ -4,7 +4,7 @@ public interface ITaskService
 {
     public Task<TaskResponse> GetByIdAsync(GetTaskRequest request, CancellationToken cancellationToken);
     
-    public Task<IEnumerable<TaskResponse>> GetAllAsync(Guid userId, CancellationToken cancellationToken);
+    public Task<IEnumerable<TaskResponse>> GetAllAsync(GetTasksRequest request, CancellationToken cancellationToken);
     
     public Task CreateAsync(CreateTaskRequest request, CancellationToken cancellationToken);
 

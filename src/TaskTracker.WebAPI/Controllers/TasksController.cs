@@ -1,4 +1,6 @@
-﻿namespace TaskTracker.WebAPI.Controllers;
+﻿using TaskTracker.WebAPI.Models;
+
+namespace TaskTracker.WebAPI.Controllers;
 
 [Route("api/tasks")]
 [ApiController]
@@ -20,9 +22,12 @@ public class TasksController(ITaskService taskService) : BaseController
     [ProducesResponseType<List<TaskResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetAsync(CancellationToken cancellationToken) 
-        => Ok(await taskService.GetAllAsync(UserId, cancellationToken));
-
+    public async Task<IActionResult> GetAsync([FromQuery] QueryParams query, 
+        CancellationToken cancellationToken)
+    {
+        var request = new GetTasksRequest(UserId, query.Search, query.SortItem, query.Order);
+        return Ok(await taskService.GetAllAsync(request, cancellationToken));
+    }
     /// <summary> Получение задачи по идентификатору. </summary>
     /// <remarks>
     /// Пример запроса:
