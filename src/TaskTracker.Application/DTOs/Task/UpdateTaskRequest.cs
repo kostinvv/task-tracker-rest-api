@@ -8,7 +8,7 @@ public record UpdateTaskRequest
 
     [Required] [MaxLength(80)] public string Title { get; init; } = null!;
     
-    [Required] [MaxLength(256)] public string Description { get; init; } = null!;
+    [MaxLength(256)] public string? Description { get; init; }
     
     [Required] public bool IsCompleted { get; init; }
     
