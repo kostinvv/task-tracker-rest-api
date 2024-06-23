@@ -11,5 +11,11 @@ public static class DependencyInjection
 
         services.AddScoped<IApplicationDbContext>(provider 
             => provider.GetService<ApplicationDbContext>()!);
+
+        services.AddStackExchangeRedisCache(setupAction: options =>
+        {
+            options.Configuration = config.GetConnectionString("Redis");
+            options.InstanceName = "TaskTracker_";
+        });
     }
 }
