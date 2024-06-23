@@ -17,6 +17,15 @@ public static class Startup
         builder.Services.AddInfrastructure(builder.Configuration);
         
         builder.Services.AddSwaggerConfiguration();
+
+        builder.Services.AddCors(options 
+            => options.AddPolicy(name: "jsClient", configurePolicy: policyBuilder 
+            => policyBuilder
+                .WithOrigins("http://localhost:5173")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+            )
+        );
         
         return builder.Build();
     }
@@ -32,6 +41,8 @@ public static class Startup
         }
         
         app.UseHttpsRedirection();
+        
+        app.UseCors(policyName: "jsClient");
         
         app.UseAuthentication();
         app.UseAuthorization();
